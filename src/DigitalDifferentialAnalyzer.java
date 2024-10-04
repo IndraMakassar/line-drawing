@@ -14,7 +14,6 @@ public class DigitalDifferentialAnalyzer extends JFrame {
     private JPanel MainPanel;
     private JTable table1;
     private JScrollPane jScrollPane;
-    private JTable table2;
     private DDATableModel tableModel;
 
     public DigitalDifferentialAnalyzer() {
@@ -38,7 +37,6 @@ public class DigitalDifferentialAnalyzer extends JFrame {
 
     private void calculate() {
         int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-        int dx, dy;
         List<Float> xValues = new ArrayList<>();
         List<Float> yValues = new ArrayList<>();
         try {
@@ -97,7 +95,7 @@ public class DigitalDifferentialAnalyzer extends JFrame {
         tableModel = new DDATableModel();
         table1 = new JTable(tableModel);
         jScrollPane = new JScrollPane(table1);
-        table2 = new JTable();
+        JTable table2 = new JTable();
         table2.setRowHeight(30);
     }
 
