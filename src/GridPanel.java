@@ -56,7 +56,11 @@ public class GridPanel extends JPanel {
         int startY = 30;
         int endX = cols * cellSize;
         int endY = rows * cellSize;
-        g2d.drawLine(startX, startY, endX, endY);
+        if (blackCells.getFirst().getX() > blackCells.getLast().getX()) {
+            g2d.drawLine(endX, startY, startX, endY);
+        } else {
+            g2d.drawLine(startX, startY, endX, endY);
+        }
     }
 
     @Override

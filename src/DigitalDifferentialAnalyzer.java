@@ -14,6 +14,7 @@ public class DigitalDifferentialAnalyzer extends JFrame {
     private JPanel MainPanel;
     private JTable table1;
     private JScrollPane jScrollPane;
+    private JFrame frame;
     private DDATableModel tableModel;
 
     public DigitalDifferentialAnalyzer() {
@@ -33,6 +34,7 @@ public class DigitalDifferentialAnalyzer extends JFrame {
         Y1.setText("");
         Y2.setText("");
         tableModel.clearData();
+        frame.dispose();
     }
 
     private void calculate() {
@@ -46,11 +48,13 @@ public class DigitalDifferentialAnalyzer extends JFrame {
             y2 = Integer.parseInt(Y2.getText());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Please enter a valid number");
+            return;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+            return;
         }
 
-        if (x2 > x1 && y2 > y1) {
+        if (x2 > x1 || y2 > y1) {
             calculateDDA(x2, x1, y2, y1, xValues, yValues);
         } else {
             calculateDDA(x1, x2, y1, y2, xValues, yValues);
@@ -68,7 +72,7 @@ public class DigitalDifferentialAnalyzer extends JFrame {
             blackCells.add(new Point(Math.round(yValues.get(i) - yStartNumber + 1), Math.round(xValues.get(i)) - xStartNumber + 1));
         }
 
-        JFrame frame = new JFrame("Grid");
+        frame = new JFrame("Grid");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.add(new GridPanel(cols + 2, rows + 2, 30, xStartNumber, yStartNumber, blackCells));
         frame.pack();
@@ -77,19 +81,22 @@ public class DigitalDifferentialAnalyzer extends JFrame {
     }
 
     private void calculateDDA(int x1, int x2, int y1, int y2, List<Float> xValues, List<Float> yValues) {
-        int dx;
-        int dy;
-        dx = x1 - x2;
-        dy = y1 - y2;
-        float step = Math.max(dy, dx);
-        float xIncrement = dx / step;
-        float yIncrement = dy / step;
+        int dx = x1 - x2;
+        int dy = y1 - y2;
+        float step = Math.max(Math.abs(dx), Math.abs(dy));
+        float xIncrement = (float) dx / step;
+        float yIncrement = (float) dy / step;
+        float x = x2;
+        float y = y2;
 
         for (int i = 0; i <= step; i++) {
-            xValues.add(x2 + i * xIncrement);
-            yValues.add(y2 + i * yIncrement);
+            xValues.add(x);
+            yValues.add(y);
+            x += xIncrement;
+            y += yIncrement;
         }
     }
+
 
     private void createUIComponents() {
         tableModel = new DDATableModel();
