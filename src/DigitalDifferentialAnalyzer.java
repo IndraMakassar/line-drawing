@@ -26,6 +26,11 @@ public class DigitalDifferentialAnalyzer extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
+        ButtonGroup G = new ButtonGroup();
+
+        G.add(algoritmaDDARadioButton);
+        G.add(algoritmaBrassenhamRadioButton);
+        G.add(algoritmaDasarRadioButton);
 
         calculateButton.addActionListener(actionEvent -> calculate());
         resetButton.addActionListener(actionEvent -> reset());
