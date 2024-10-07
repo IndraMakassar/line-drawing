@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="DigitalDifferentialAnalyzer">
-  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="MainPanel" layout-manager="GridLayoutManager" row-count="6" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="1" left="4" bottom="1" right="4"/>
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
@@ -90,7 +90,7 @@
       </component>
       <scrollpane id="14ab" binding="jScrollPane" custom-create="true">
         <constraints>
-          <grid row="5" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -104,6 +104,30 @@
           </component>
         </children>
       </scrollpane>
+      <component id="48a6b" class="javax.swing.JRadioButton" binding="algoritmaDasarRadioButton" default-binding="true">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Algoritma Dasar"/>
+        </properties>
+      </component>
+      <component id="bdf43" class="javax.swing.JRadioButton" binding="algoritmaBrassenhamRadioButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Algoritma Brassenham"/>
+        </properties>
+      </component>
+      <component id="836b" class="javax.swing.JRadioButton" binding="algoritmaDDARadioButton" default-binding="true">
+        <constraints>
+          <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Algoritma DDA"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

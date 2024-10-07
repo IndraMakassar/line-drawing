@@ -14,6 +14,9 @@ public class DigitalDifferentialAnalyzer extends JFrame {
     private JPanel MainPanel;
     private JTable table1;
     private JScrollPane jScrollPane;
+    private JRadioButton algoritmaDDARadioButton;
+    private JRadioButton algoritmaBrassenhamRadioButton;
+    private JRadioButton algoritmaDasarRadioButton;
     private JFrame frame;
     private DDATableModel tableModel;
 
