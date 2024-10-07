@@ -18,7 +18,9 @@ public class DigitalDifferentialAnalyzer extends JFrame {
     private JRadioButton algoritmaBrassenhamRadioButton;
     private JRadioButton algoritmaDasarRadioButton;
     private JFrame frame;
-    private DDATableModel tableModel;
+    private DDATableModel tableModelDDA;
+    private BasicTableModel tableModelBasic;
+    ButtonGroup buttonGroup;
 
     public DigitalDifferentialAnalyzer() {
         setTitle("Digital Differential Analyzer");
@@ -26,11 +28,12 @@ public class DigitalDifferentialAnalyzer extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
-        ButtonGroup G = new ButtonGroup();
+        buttonGroup = new ButtonGroup();
 
-        G.add(algoritmaDDARadioButton);
-        G.add(algoritmaBrassenhamRadioButton);
-        G.add(algoritmaDasarRadioButton);
+        buttonGroup.add(algoritmaDDARadioButton);
+        buttonGroup.add(algoritmaBrassenhamRadioButton);
+        buttonGroup.add(algoritmaDasarRadioButton);
+        algoritmaDasarRadioButton.setSelected(true);
 
         calculateButton.addActionListener(actionEvent -> calculate());
         resetButton.addActionListener(actionEvent -> reset());
@@ -41,7 +44,8 @@ public class DigitalDifferentialAnalyzer extends JFrame {
         X2.setText("");
         Y1.setText("");
         Y2.setText("");
-        tableModel.clearData();
+        tableModelBasic.clearData();
+        tableModelDDA.clearData();
         frame.dispose();
     }
 
@@ -62,12 +66,25 @@ public class DigitalDifferentialAnalyzer extends JFrame {
             return;
         }
 
-        if (x2 > x1 || y2 > y1) {
-            calculateDDA(x2, x1, y2, y1, xValues, yValues);
+        if (algoritmaDDARadioButton.isSelected()) {
+            if (x2 > x1 || y2 > y1) {
+                calculateDDA(x2, x1, y2, y1, xValues, yValues);
+            } else {
+                calculateDDA(x1, x2, y1, y2, xValues, yValues);
+            }
+        } else if (algoritmaBrassenhamRadioButton.isSelected()) {
+            if (x2 > x1 || y2 > y1) {
+                calculateDDA(x2, x1, y2, y1, xValues, yValues);
+            } else {
+                calculateDDA(x1, x2, y1, y2, xValues, yValues);
+            }
+        } else if (algoritmaDasarRadioButton.isSelected()) {
+            calculateDasar(x1, x2, y1, y2, xValues, yValues);
+
+
         } else {
-            calculateDDA(x1, x2, y1, y2, xValues, yValues);
+
         }
-        tableModel.setData(xValues, yValues);
 
         int cols = Math.abs(x1 - x2);
         int rows = Math.abs(y1 - y2);
@@ -88,6 +105,26 @@ public class DigitalDifferentialAnalyzer extends JFrame {
         frame.setVisible(true);
     }
 
+    private void calculateDasar(int x1, int x2, int y1, int y2, List<Float> xValues, List<Float> yValues) {
+        float m = (float) (y2 - y1) / (x2 - x1);
+        float b = y1 - m * x1;
+
+        xValues.add((float) x1);
+        yValues.add((float) y1);
+
+        for (int x = x1 + 1; x <= x2; x++) {
+            float y = m * x + b;
+
+            xValues.add((float) x);
+            yValues.add(y);
+        }
+
+        tableModelBasic = new BasicTableModel();
+        table1.setModel(tableModelBasic);
+
+        tableModelBasic.setData(xValues, yValues, m, b);
+    }
+
     private void calculateDDA(int x1, int x2, int y1, int y2, List<Float> xValues, List<Float> yValues) {
         int dx = x1 - x2;
         int dy = y1 - y2;
@@ -103,15 +140,77 @@ public class DigitalDifferentialAnalyzer extends JFrame {
             x += xIncrement;
             y += yIncrement;
         }
+        tableModelDDA = new DDATableModel();
+        table1.setModel(tableModelDDA);
+
+        tableModelDDA.setData(xValues, yValues);
     }
 
-
     private void createUIComponents() {
-        tableModel = new DDATableModel();
-        table1 = new JTable(tableModel);
+        tableModelDDA = new DDATableModel();
+        table1 = new JTable(tableModelDDA);
         jScrollPane = new JScrollPane(table1);
         JTable table2 = new JTable();
         table2.setRowHeight(30);
+    }
+
+    private static class BasicTableModel extends AbstractTableModel {
+        private final String[] columnNames = {"x", "dx", "x", "y(b)", "m", "y"};
+        private final List<List<String>> data = new ArrayList<>();
+
+        @Override
+        public int getRowCount() {
+            return data.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return data.get(rowIndex).get(columnIndex);
+        }
+
+        public void setData(List<Float> xValues, List<Float> yValues, float m, float b) {
+            data.clear();
+            int size = xValues.size();
+
+            // Populate data with values for each row
+            for (int i = 0; i < size; i++) {
+                List<String> row = new ArrayList<>();
+                float x = xValues.get(i);
+                float y = yValues.get(i);
+
+                // Calculate dx (difference between x values)
+                float dx = (i > 0) ? x - xValues.get(i - 1) : 0;
+
+                // Add values to the row
+                row.add(String.format("%.2f", x));        // x
+                row.add(String.format("%.2f", dx));       // dx
+                row.add(String.format("%.2f", x));        // x again
+                row.add(String.format("%.2f", b));        // y-intercept (b)
+                row.add(String.format("%.2f", m));        // slope (m)
+                row.add(String.format("%.2f", y));        // y
+
+                // Add row to the data
+                data.add(row);
+            }
+
+
+            fireTableDataChanged();
+        }
+
+        public void clearData() {
+            data.clear();
+            fireTableDataChanged();
+        }
     }
 
     private static class DDATableModel extends AbstractTableModel {
